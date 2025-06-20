@@ -147,29 +147,6 @@ uint32_t DG_GetTicksMs()
   return millis();
 }
 
-// int DG_GetKey(int* pressed, unsigned char* key) {
-//   *pressed = 0;
-//   *key = 0;
-
-//   if(M5.BtnA.wasPressed()) {
-//     *pressed = 1;
-//     *key = KEY_ENTER;
-//     return 1;
-//   }
-//   else if(M5.BtnB.wasPressed()) {
-//     *pressed = 1;
-//     *key = KEY_FIRE;
-//     return 1;
-//   }
-//   else if(M5.BtnC.wasPressed()) {
-//     *pressed = 1;
-//     *key = KEY_USE;
-//     return 1;
-//   }
-
-//   return 0;
-// }
-
 int DG_GetKey(int *pressed, unsigned char *doomKey)
 {
   if (s_KeyQueueReadIndex == s_KeyQueueWriteIndex)
@@ -188,8 +165,6 @@ int DG_GetKey(int *pressed, unsigned char *doomKey)
 
     return 1;
   }
-
-  return 0;
 }
 
 void setup()
@@ -223,15 +198,3 @@ void DG_SetWindowTitle(const char * title)
 {
   // M5Cardputer doesn't have window titles, so this is a no-op
 }
-
-// int main(int argc, char **argv)
-// {
-//   doomgeneric_Create(argc, argv);
-
-//   while (1)
-//   {
-//     doomgeneric_Tick();
-//   }
-
-//   return 0;
-// }
