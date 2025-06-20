@@ -59,21 +59,22 @@ static void pollKeyboard()
 {
   M5Cardputer.update();
   
+  // Handle keyboard state changes
   if (M5Cardputer.Keyboard.isChange())
   {
+    Keyboard_Class::KeysState keysState = M5Cardputer.Keyboard.keysState();
+    
+    // For simplicity, treat any key change as a press event
+    // More sophisticated handling would track individual key states
     if (M5Cardputer.Keyboard.isPressed())
     {
-      Keyboard_Class::KeysState keysState = M5Cardputer.Keyboard.keysState();
-      
-      // Handle individual key presses
+      // Handle individual key presses from word
       if (keysState.word.length() > 0) 
       {
-        for (int i = 0; i < keysState.word.length(); i++)
-        {
-          char key = keysState.word[i];
-          unsigned char doomKey = convertToDoomKey(key);
-          addKeyToQueue(1, doomKey);
-        }
+        // Get the last character typed
+        char key = keysState.word[keysState.word.length() - 1];
+        unsigned char doomKey = convertToDoomKey(key);
+        addKeyToQueue(1, doomKey);
       }
       
       // Handle special keys
@@ -87,10 +88,12 @@ static void pollKeyboard()
 
 void DG_Init()
 {
-  M5Cardputer.begin();
-  // Initialize M5Cardputer display and keyboard
+  // M5Cardputer should already be initialized from setup()
+  // Initialize display for DOOM
   M5Cardputer.Display.setRotation(1); // Landscape orientation
   M5Cardputer.Display.fillScreen(BLACK);
+  M5Cardputer.Display.setTextColor(WHITE);
+  M5Cardputer.Display.println("DOOM Initializing...");
 }
 
 // External color palette from i_video.c
@@ -191,12 +194,23 @@ int DG_GetKey(int *pressed, unsigned char *doomKey)
 
 void setup()
 {
+  // Initialize M5Cardputer with SD card support
+  M5Cardputer.begin(true, true, true, true);  // Enable: Display, Power, Speaker, SD
+  
   // Initialize key queue
   memset(s_KeyQueue, 0, KEYQUEUE_SIZE * sizeof(unsigned short));
   s_KeyQueueWriteIndex = 0;
   s_KeyQueueReadIndex = 0;
   
-  doomgeneric_Create(0, nullptr);
+  // Create arguments to specify the WAD file
+  // Try multiple possible locations for the WAD file
+  static char* argv[] = {
+    (char*)"doomgeneric",
+    (char*)"-iwad",
+    (char*)"miniwad.wad"  // Look for WAD file in current directory/SD card
+  };
+  
+  doomgeneric_Create(3, argv);
 }
 
 void loop()
