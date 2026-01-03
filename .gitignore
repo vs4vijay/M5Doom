@@ -9,7 +9,8 @@
 Debug/
 Release/
 Build/
-doomgeneric
+doomgeneric/doomgeneric
+doomgeneric/build/
 doomgeneric.map
 
 # PlatformIO
