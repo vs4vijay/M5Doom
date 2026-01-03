@@ -35,6 +35,9 @@ A port of id Software's DOOM to the M5Stack Cardputer using doomgeneric.
 # Install PlatformIO
 pip install platformio
 
+# Prepare the build (copies doomgeneric sources to src/)
+./prepare_build.sh
+
 # Build the firmware
 pio run -e m5stack-cardputer
 
