@@ -101,49 +101,66 @@ static void addKeyToQueue(int pressed, unsigned char keyCode) {
 static void handleKeyInput() {
     M5Cardputer.update();
     
-    // Check for key press
+    // Check for key press or release
     if (M5Cardputer.Keyboard.isChange()) {
         if (M5Cardputer.Keyboard.isPressed()) {
             Keyboard_Class::KeysState status = M5Cardputer.Keyboard.keysState();
             
-            // Handle special modifier keys
-            for (auto i : status.word) {
-                // Add key press
-                addKeyToQueue(1, i);
-            }
-            for (auto i : status.del) {
-                // Backspace
-                addKeyToQueue(1, 0x08);
-            }
-            for (auto i : status.enter) {
-                // Enter
-                addKeyToQueue(1, 0x0D);
-            }
-            for (auto i : status.tab) {
-                // Tab
-                addKeyToQueue(1, 0x09);
-            }
-            // Handle Fn key combinations for arrow keys
+            // Handle Fn key combinations first (for arrow keys)
             if (status.fn) {
                 // Fn + WASD for arrows when Fn is held
                 for (auto i : status.word) {
-                    if (i == 'w' || i == 'W') addKeyToQueue(1, 0xB5); // Up
-                    else if (i == 's' || i == 'S') addKeyToQueue(1, 0xB6); // Down
-                    else if (i == 'a' || i == 'A') addKeyToQueue(1, 0xB4); // Left
-                    else if (i == 'd' || i == 'D') addKeyToQueue(1, 0xB7); // Right
+                    if (i == 'w' || i == 'W') {
+                        addKeyToQueue(1, 0xB5); // Up
+                        continue; // Skip normal processing
+                    }
+                    else if (i == 's' || i == 'S') {
+                        addKeyToQueue(1, 0xB6); // Down
+                        continue;
+                    }
+                    else if (i == 'a' || i == 'A') {
+                        addKeyToQueue(1, 0xB4); // Left
+                        continue;
+                    }
+                    else if (i == 'd' || i == 'D') {
+                        addKeyToQueue(1, 0xB7); // Right
+                        continue;
+                    }
+                    // For other keys with Fn, process normally
+                    addKeyToQueue(1, i);
+                }
+            } else {
+                // Handle normal key presses
+                for (auto i : status.word) {
+                    addKeyToQueue(1, i);
                 }
             }
+            
+            // Handle special keys
+            for (auto i : status.del) {
+                addKeyToQueue(1, 0x08); // Backspace
+            }
+            for (auto i : status.enter) {
+                addKeyToQueue(1, 0x0D); // Enter
+            }
+            for (auto i : status.tab) {
+                addKeyToQueue(1, 0x09); // Tab
+            }
         } else {
-            // Key release - add release events for recent keys
-            // For simplicity, we'll handle this in the key processing
+            // Key release - send release events for all keys
+            // This helps prevent stuck keys
+            Keyboard_Class::KeysState status = M5Cardputer.Keyboard.keysState();
+            for (auto i : status.word) {
+                addKeyToQueue(0, i);
+            }
         }
     }
 }
 
 // DG_Init - Initialize display and input
 void DG_Init() {
-    // Allocate frame buffer
-    frameBuffer = (uint16_t*)heap_caps_malloc(DISPLAY_WIDTH * DISPLAY_HEIGHT * sizeof(uint16_t), MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL);
+    // Allocate frame buffer (RGB565 format requires 16-bit aligned memory)
+    frameBuffer = (uint16_t*)heap_caps_malloc(DISPLAY_WIDTH * DISPLAY_HEIGHT * sizeof(uint16_t), MALLOC_CAP_DEFAULT);
     
     if (frameBuffer == NULL) {
         Serial.println("Failed to allocate frame buffer!");
