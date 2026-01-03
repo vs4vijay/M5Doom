@@ -35,9 +35,6 @@ A port of id Software's DOOM to the M5Stack Cardputer using doomgeneric.
 # Install PlatformIO
 pip install platformio
 
-# Prepare the build (copies doomgeneric sources to src/)
-./prepare_build.sh
-
 # Build the firmware
 pio run -e m5stack-cardputer
 
@@ -102,13 +99,15 @@ You need a DOOM WAD file to play. The shareware version (`doom1.wad`) is freely 
 
 ```
 M5Doom/
-├── M5Doom.ino                          # Arduino main sketch
-├── platformio.ini                       # PlatformIO configuration
-├── doomgeneric/                         # Doom source code
-│   ├── doomgeneric_m5cardputer.cpp     # M5Cardputer port implementation
-│   └── ...                              # Original doom source
-├── .github/workflows/                   # CI/CD workflows
-└── README_M5CARDPUTER.md               # This file
+├── src/
+│   └── main.cpp                             # Arduino main application
+├── platformio.ini                           # PlatformIO configuration
+├── build_doomgeneric.py                     # Build script for doomgeneric sources
+├── doomgeneric/                             # Doom source code
+│   ├── doomgeneric_m5cardputer.cpp         # M5Cardputer port implementation
+│   └── ...                                  # Original doom source files
+├── .github/workflows/                       # CI/CD workflows
+└── README_M5CARDPUTER.md                   # This file
 ```
 
 ### Porting Details

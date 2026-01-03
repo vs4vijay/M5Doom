@@ -17,9 +17,6 @@ See [README_M5CARDPUTER.md](README_M5CARDPUTER.md) for detailed build and usage 
 ### Quick Start for M5Cardputer
 
 ```bash
-# Prepare build environment
-./prepare_build.sh
-
 # Build with PlatformIO
 pio run -e m5stack-cardputer
 

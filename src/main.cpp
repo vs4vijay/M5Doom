@@ -1,14 +1,3 @@
-#!/bin/bash
-set -e
-
-echo "Preparing M5Doom build..."
-
-# Create src directory if it doesn't exist
-mkdir -p src
-
-# Copy main.cpp if it exists, otherwise create it
-if [ ! -f "src/main.cpp" ]; then
-    cat > src/main.cpp << 'EOF'
 #include "M5Cardputer.h"
 
 // Doom generic interface
@@ -55,11 +44,3 @@ void loop() {
     // Update M5Cardputer state
     M5Cardputer.update();
 }
-EOF
-fi
-
-# Copy doomgeneric files to src if not already there
-echo "Copying doomgeneric source files..."
-rsync -a --exclude='Makefile*' --exclude='*.o' --exclude='build/' --exclude='doomgeneric' doomgeneric/ src/
-
-echo "Build preparation complete!"

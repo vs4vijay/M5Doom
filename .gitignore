@@ -19,7 +19,6 @@ doomgeneric.map
 *.pyc
 lib/
 __pycache__/
-src/
 
 # Arduino
 *.hex
