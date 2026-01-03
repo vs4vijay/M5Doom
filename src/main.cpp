@@ -33,8 +33,8 @@ void setup() {
     }
     
     // Initialize Doom
-    char* argv[] = {(char*)"doom", (char*)"-iwad", (char*)"doom1.wad"};
-    doomgeneric_Create(3, argv);
+    const char* doom_argv[] = {"doom", "-iwad", "doom1.wad"};
+    doomgeneric_Create(3, (char**)doom_argv);
 }
 
 void loop() {
