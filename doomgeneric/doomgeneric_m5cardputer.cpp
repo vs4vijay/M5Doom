@@ -41,6 +41,12 @@ void initPalette() {
 
 // Convert M5Cardputer key to Doom key
 static unsigned char convertToDoomKey(char key) {
+    // Special key codes for M5Cardputer arrows
+    #define M5_KEY_LEFT  0xB4
+    #define M5_KEY_UP    0xB5
+    #define M5_KEY_DOWN  0xB6
+    #define M5_KEY_RIGHT 0xB7
+    
     // Handle special keys
     switch (key) {
         case 0x08: // Backspace
@@ -50,13 +56,13 @@ static unsigned char convertToDoomKey(char key) {
             return KEY_ENTER;
         case 0x09: // Tab
             return KEY_TAB;
-        case 0xB4: // Left arrow
+        case M5_KEY_LEFT:
             return KEY_LEFTARROW;
-        case 0xB7: // Right arrow
+        case M5_KEY_RIGHT:
             return KEY_RIGHTARROW;
-        case 0xB5: // Up arrow
+        case M5_KEY_UP:
             return KEY_UPARROW;
-        case 0xB6: // Down arrow
+        case M5_KEY_DOWN:
             return KEY_DOWNARROW;
         case ' ':
             return KEY_USE;
@@ -111,19 +117,19 @@ static void handleKeyInput() {
                 // Fn + WASD for arrows when Fn is held
                 for (auto i : status.word) {
                     if (i == 'w' || i == 'W') {
-                        addKeyToQueue(1, 0xB5); // Up
+                        addKeyToQueue(1, M5_KEY_UP);
                         continue; // Skip normal processing
                     }
                     else if (i == 's' || i == 'S') {
-                        addKeyToQueue(1, 0xB6); // Down
+                        addKeyToQueue(1, M5_KEY_DOWN);
                         continue;
                     }
                     else if (i == 'a' || i == 'A') {
-                        addKeyToQueue(1, 0xB4); // Left
+                        addKeyToQueue(1, M5_KEY_LEFT);
                         continue;
                     }
                     else if (i == 'd' || i == 'D') {
-                        addKeyToQueue(1, 0xB7); // Right
+                        addKeyToQueue(1, M5_KEY_RIGHT);
                         continue;
                     }
                     // For other keys with Fn, process normally
@@ -159,11 +165,19 @@ static void handleKeyInput() {
 
 // DG_Init - Initialize display and input
 void DG_Init() {
-    // Allocate frame buffer (RGB565 format requires 16-bit aligned memory)
-    frameBuffer = (uint16_t*)heap_caps_malloc(DISPLAY_WIDTH * DISPLAY_HEIGHT * sizeof(uint16_t), MALLOC_CAP_DEFAULT);
+    // Allocate frame buffer using default memory (optimal for display performance)
+    // Using DMA-capable memory for better display transfer speed
+    frameBuffer = (uint16_t*)heap_caps_malloc(DISPLAY_WIDTH * DISPLAY_HEIGHT * sizeof(uint16_t), MALLOC_CAP_DMA);
     
     if (frameBuffer == NULL) {
-        Serial.println("Failed to allocate frame buffer!");
+        // Fallback to default memory if DMA allocation fails
+        frameBuffer = (uint16_t*)heap_caps_malloc(DISPLAY_WIDTH * DISPLAY_HEIGHT * sizeof(uint16_t), MALLOC_CAP_DEFAULT);
+    }
+    
+    if (frameBuffer == NULL) {
+        Serial.println("FATAL: Failed to allocate frame buffer!");
+        // On embedded systems, halting execution is appropriate for critical errors
+        // as there's no recovery mechanism without reboot
         while(1) delay(1000);
     }
     
