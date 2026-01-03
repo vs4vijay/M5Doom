@@ -5,7 +5,7 @@ import os
 project_dir = env.get("PROJECT_DIR")
 doomgeneric_dir = os.path.join(project_dir, "doomgeneric")
 
-# List of C files from doomgeneric to compile
+# List of C files from doomgeneric to compile (excluding platform-specific implementations)
 doom_sources = [
     "dummy.c", "am_map.c", "doomdef.c", "doomstat.c", "dstrings.c", 
     "d_event.c", "d_items.c", "d_iwad.c", "d_loop.c", "d_main.c", 
@@ -23,7 +23,7 @@ doom_sources = [
     "st_lib.c", "st_stuff.c", "s_sound.c", "tables.c", "v_video.c", 
     "wi_stuff.c", "w_checksum.c", "w_file.c", "w_main.c", "w_wad.c", 
     "z_zone.c", "w_file_stdc.c", "i_input.c", "i_video.c", 
-    "doomgeneric.c", "doomgeneric_m5cardputer.cpp"
+    "doomgeneric.c"
 ]
 
 # Add each source file to the build

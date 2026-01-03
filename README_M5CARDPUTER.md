@@ -100,19 +100,20 @@ You need a DOOM WAD file to play. The shareware version (`doom1.wad`) is freely 
 ```
 M5Doom/
 ├── src/
-│   └── main.cpp                             # Arduino main application
+│   ├── main.cpp                             # Arduino main application
+│   └── doomgeneric_m5cardputer.cpp         # M5Cardputer port implementation
+├── doomgeneric/                             # Original doom source (unchanged)
+│   ├── doomgeneric.c
+│   ├── doomgeneric.h
+│   └── ...                                  # All original doom files
 ├── platformio.ini                           # PlatformIO configuration
 ├── build_doomgeneric.py                     # Build script for doomgeneric sources
-├── doomgeneric/                             # Doom source code
-│   ├── doomgeneric_m5cardputer.cpp         # M5Cardputer port implementation
-│   └── ...                                  # Original doom source files
-├── .github/workflows/                       # CI/CD workflows
-└── README_M5CARDPUTER.md                   # This file
+└── .github/workflows/                       # CI/CD workflows
 ```
 
 ### Porting Details
 
-The M5Cardputer port implements the doomgeneric interface:
+The M5Cardputer port follows the doomgeneric porting approach by implementing only the platform-specific functions in `src/doomgeneric_m5cardputer.cpp`, while keeping the original `doomgeneric/` directory unchanged:
 
 - `DG_Init()`: Initialize display and keyboard
 - `DG_DrawFrame()`: Render frame buffer to display (with 8-bit palette conversion)
@@ -120,6 +121,8 @@ The M5Cardputer port implements the doomgeneric interface:
 - `DG_GetTicksMs()`: Millisecond timer
 - `DG_GetKey()`: Keyboard input handling
 - `DG_SetWindowTitle()`: No-op for embedded device
+
+This approach allows easy upstream updates to the doomgeneric code without conflicts.
 
 ### Display Rendering
 
