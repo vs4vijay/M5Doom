@@ -11,3 +11,15 @@ Release/
 Build/
 doomgeneric
 doomgeneric.map
+
+# PlatformIO
+.pio/
+.vscode/
+*.pyc
+lib/
+__pycache__/
+
+# Arduino
+*.hex
+*.bin
+*.elf
