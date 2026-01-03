@@ -9,5 +9,18 @@
 Debug/
 Release/
 Build/
-doomgeneric
+doomgeneric/doomgeneric
+doomgeneric/build/
 doomgeneric.map
+
+# PlatformIO
+.pio/
+.vscode/
+*.pyc
+lib/
+__pycache__/
+
+# Arduino
+*.hex
+*.bin
+*.elf

@@ -4,6 +4,26 @@ Of course Doom is already portable but with doomgeneric it is possible with just
 
 To try it you will need a WAD file (game data). If you don't own the game, shareware version is freely available (doom1.wad).
 
+## M5Stack Cardputer Port
+
+This repository includes a complete port for the **M5Stack Cardputer** - a portable ESP32-S3 based computer with:
+- 240x135 pixel display
+- 56-key QWERTY keyboard
+- Built-in battery
+- Wi-Fi and Bluetooth
+
+See [README_M5CARDPUTER.md](README_M5CARDPUTER.md) for detailed build and usage instructions.
+
+### Quick Start for M5Cardputer
+
+```bash
+# Build with PlatformIO
+pio run -e m5stack-cardputer
+
+# Upload to device
+pio run -e m5stack-cardputer -t upload
+```
+
 # porting
 Create a file named doomgeneric_yourplatform.c and just implement these functions to suit your platform.
 * DG_Init
